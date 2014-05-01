@@ -7,7 +7,7 @@ describe Peepster do
                 ["Jett", "Clementine", "Female", "Black", "9/5/1991"]] }
 
   describe "command line" do
-    context "with args" do
+    context "with file args" do
       let(:output) { `ruby lib/peepster.rb spec/fixtures/test1.csv spec/fixtures/test2.csv spec/fixtures/test3.csv` }
       before(:each) { output }
       after(:each) { File.delete("data/data.csv") }
@@ -32,6 +32,25 @@ describe Peepster do
         combo_count = File.open("data/data.csv").readlines.size
 
         expect(combo_count).to eq orig_count
+      end
+    end
+
+    context "with sort options" do
+      after(:each) { File.delete("data/data.csv") }
+
+      it "sorts by gender" do
+        output = `ruby lib/peepster.rb --gender spec/fixtures/test3.csv`
+        expect(output).to match(/saved peeps\nGordon/)
+      end
+
+      it "sorts by date of birth" do
+        output = `ruby lib/peepster.rb --birth spec/fixtures/test2.csv`
+        expect(output).to match(/saved peeps\nHendrix/)
+      end
+
+      it "sorts by last name" do
+        output = `ruby lib/peepster.rb --last spec/fixtures/test1.csv`
+        expect(output).to match(/saved peeps\nClapton/)
       end
     end
 
@@ -138,18 +157,18 @@ describe Peepster do
       allow(Peepster).to receive(:sort).and_return(peeps)
       expect(Peepster).to receive(:sort)
 
-      Peepster.output("test")
+      Peepster.output(1, "test")
     end
 
     it "outputs existing csv file of peeps" do
-      Peepster.output("test")
+      Peepster.output(1, "test")
 
       expect($stdout.string).to match(/Frusciante/)
       expect($stdout.string).to match(/outputted/)
     end
 
     it "outputs dates in M/D/YYYY format" do
-      Peepster.output("test")
+      Peepster.output(1, "test")
 
       expect($stdout.string).to match(/3\/13\/1989/)
     end

@@ -26,7 +26,7 @@ class Peepster
     end
   end
 
-  def self.output(filename = "data", sort = 1)
+  def self.output(sort, filename = "data")
     # Read it to array
     peeps = CSV.read("data/#{filename}.csv")
 
@@ -52,6 +52,11 @@ class Peepster
 
   # Has an argument, and is not rspec running
   if ARGV.length > 0 && "#{$0}" !~ /rspec/
+    sort = 1 if ARGV.delete('--gender')
+    sort = 2 if ARGV.delete('--birth')
+    sort = 3 if ARGV.delete('--last')
+    sort ||= 1
+
     peeps = []
 
     ARGV.each_with_index do |a, i|
@@ -60,6 +65,6 @@ class Peepster
     end
 
     save(peeps)
-    output
+    output(sort)
   end
 end
