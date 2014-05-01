@@ -2,6 +2,10 @@ require 'spec_helper.rb'
 require 'peepster'
 
 describe Peepster do
+  let(:peep) { ["Frusciante", "Trinity", "Female", "Green", "3/13/1989"] }
+  let(:peeps) { [peep, ["Knowles", "Tyler", "Male", "Red", "4/5/1979"],
+                ["Jett", "Clementine", "Female", "Black", "9/5/1991"]] }
+
   describe "command line" do
     context "with args" do
       after(:each) { File.delete("data/data.csv") }
@@ -47,9 +51,9 @@ describe Peepster do
   end
 
   describe ".save" do
-    context "given chunk" do
+    context "given chunk of peeps" do
       it "creates a csv file of peeps" do
-        Peepster.save([["a", "b", "c"], ["d", "e", "f"]], "test")
+        Peepster.save(peeps, "test")
 
         expect(File.exist?("data/test.csv")).to be
         expect($stdout.string).to match(/saved/)
@@ -58,48 +62,77 @@ describe Peepster do
       end
     end
 
-    context "given flat array" do
+    context "given one peep" do
       it "raises an error trying to map array" do
-        expect{ Peepster.save(["a", "b", "c"], "test") }.to raise_error(NoMethodError)
+        expect{ Peepster.save(peep, "test") }.to raise_error(NoMethodError)
       end
     end
   end
 
   describe ".sort" do
     context "sort option 1" do
-      it "sorts peeps by gender (f first), then last name asc"
+      it "sorts peeps by gender (f first), then last name asc" do
+        sorted_peeps = Peepster.sort(peeps, 1)
+
+        expect(sorted_peeps[0].first).to eq "Frusciante"
+        expect(sorted_peeps[1].first).to eq "Jett"
+      end
     end
 
     context "sort option 2" do
-      it "sorts peeps by birth date, asc"
+      it "sorts peeps by birth date, asc" do
+        sorted_peeps = Peepster.sort(peeps, 2)
+
+        expect(sorted_peeps[0].first).to eq "Knowles"
+        expect(sorted_peeps[1].first).to eq "Frusciante"
+      end
     end
 
     context "sort options 3" do
       it "sorts peeps by last name desc" do
-        expect(Peepster.sort([["z"], ["x"], ["c"]], 3).first.first).to eq "c"
+        sorted_peeps = Peepster.sort(peeps, 3)
+
+        expect(sorted_peeps[0].first).to eq "Frusciante"
+        expect(sorted_peeps[1].first).to eq "Jett"
       end
     end
 
     context "no valid sort option" do
       it "does not sort" do
-        peeps = Peepster.sort([["z"], ["x"], ["c"]], 5)
+        sorted_peeps = Peepster.sort(peeps, 5)
 
-        expect(peeps[0].first).to eq "z"
-        expect(peeps[1].first).to eq "x"
+        expect(sorted_peeps[0].first).to eq "Frusciante"
+        expect(sorted_peeps[1].first).to eq "Knowles"
       end
     end
   end
 
   describe ".output" do
-    it "outputs existing csv file of peeps" do
-      Peepster.save([["L", "F", "Male", "Red", "3/13/2013"], ["L", "F", "Female", "Green", "9/01/2013"]])
-      Peepster.output("test")
-
-      expect($stdout.string).to match(/outputted/)
-
-      File.delete("data/test.csv")
+    before(:each) do
+      Peepster.save(peeps, "test")
     end
 
-    it "outputs dates in M/D/YYYY format"
+    after(:each) { File.delete("data/test.csv") }
+
+    it "sorts using .sort" do
+      # stub .sort since it's already tested
+      allow(Peepster).to receive(:sort).and_return(peeps)
+      expect(Peepster).to receive(:sort)
+
+      Peepster.output("test")
+    end
+
+    it "outputs existing csv file of peeps" do
+      Peepster.output("test")
+
+      expect($stdout.string).to match(/Frusciante/)
+      expect($stdout.string).to match(/outputted/)
+    end
+
+    it "outputs dates in M/D/YYYY format" do
+      Peepster.output("test")
+
+      expect($stdout.string).to match(/3\/13\/1989/)
+    end
   end
 end

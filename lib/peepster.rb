@@ -11,16 +11,22 @@ class Peepster
     puts 'saved peeps'
   end
 
-  def self.sort(arr, sort = 3)
-    if sort == 3
-      # Last name descending
-      arr.sort { |x, y| x[0] <=> y[0] }
+  def self.sort(arr, sort)
+    if sort == 1
+      # Gender F first, Last name asc
+      arr.sort {|x, y| [x[2].capitalize, x[0].capitalize] <=> [y[2].capitalize, y[0].capitalize] }
+    elsif sort == 2
+      # Birth date asc
+      arr.sort {|x, y| Date.strptime(x[4], '%m/%d/%Y') <=> Date.strptime(y[4], '%m/%d/%Y') }
+    elsif sort == 3
+      # Last name desc
+      arr.sort {|x, y| x[0] <=> y[0] }
     else
       arr
     end
   end
 
-  def self.output(filename = "data", sort = 3)
+  def self.output(filename = "data", sort = 1)
     # Read it to array
     peeps = CSV.read("data/#{filename}.csv")
 
@@ -28,8 +34,10 @@ class Peepster
     peeps = sort(peeps, sort)
 
     # Output array
-    # Dates (p[4]) in M/D/YYYY
-    peeps.each {|p| puts "#{p[0]} : #{p[1]} : #{p[2]} : #{p[4]} : #{p[3]}" }
+    peeps.each do |p|
+      date = Date.strptime(p[4], '%m/%d/%Y').strftime('%-m/%-d/%Y')
+      puts "#{p[0].capitalize} : #{p[1].capitalize} : #{p[2].capitalize} : #{date} : #{p[3].capitalize}"
+    end
 
     puts 'outputted peeps'
   end
