@@ -8,11 +8,30 @@ describe Peepster do
 
   describe "command line" do
     context "with args" do
+      let(:output) { `ruby lib/peepster.rb spec/fixtures/test1.csv spec/fixtures/test2.csv spec/fixtures/test3.csv` }
+      before(:each) { output }
       after(:each) { File.delete("data/data.csv") }
 
-      it "creates a csv file of peeps from all inputed files" do
-        output = `ruby lib/peepster.rb spec/fixtures/test1.csv spec/fixtures/test2.csv spec/fixtures/test3.csv`
+      it "creates a csv file" do
+        expect(File.exists?("data/data.csv")).to be
+      end
+
+      it "outputs to command line" do
         expect(output).to match(/saved peeps/)
+        expect(output).to match(/outputted peeps/)
+      end
+
+      it "combines all inputed data" do
+        # Tested by checking number of lines
+        orig_count = 0
+
+        %w(spec/fixtures/test1.csv spec/fixtures/test2.csv spec/fixtures/test3.csv).each do |file|
+          orig_count += File.open(file,"r").readlines.size
+        end
+
+        combo_count = File.open("data/data.csv").readlines.size
+
+        expect(combo_count).to eq orig_count
       end
     end
 

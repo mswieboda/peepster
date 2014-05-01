@@ -54,9 +54,9 @@ class Peepster
   if ARGV.length > 0 && "#{$0}" !~ /rspec/
     peeps = []
 
-    ARGV.each_with_index do |a|
+    ARGV.each_with_index do |a, i|
       sep = get_separator(File.open(a) {|f| f.readline})
-      peeps = CSV.read(a, { :col_sep => sep })
+      CSV.foreach(a, { :col_sep => sep }) {|row| peeps << row }
     end
 
     save(peeps)
