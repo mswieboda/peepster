@@ -3,21 +3,40 @@
 require 'csv'
 
 class Peepster
-  def create
-    records = [["Matt", "Swieboda", "Male", "Red", "4/5/1989"],["John", "Pec", "Male", "Blue", "4/5/1999"],["Nico", "Bob", "Male", "Red", "4/5/1987"]]
-
-    CSV.open("data/data-#{ENV['RAILS_ENV']}.csv", "a+b") do |csv|
-      records.each {|r| csv << r }
+  def self.save(arr, filename = "data")
+    CSV.open("data/#{filename}.csv", "w") do |csv|
+      arr.each {|r| csv << r }
     end
 
     puts 'saved peeps'
   end
 
-  def output
-    CSV.foreach("data/data-#{ENV['RAILS_ENV']}.csv") do |row|
-      puts row.inspect
+  def self.output(filename = "data")
+    CSV.foreach("data/#{filename}.csv") do |row|
+      puts "#{row[0]} : #{row[1]} : #{row[2]} : #{row[4]} : #{row[3]}"
     end
 
     puts 'outputted peeps'
+  end
+
+  def self.get_separator(line)
+    [' | ', ', ', ' '].each do |sep|
+      return sep if line.scan(sep).length == 4
+    end
+
+    return nil
+  end
+
+  # Has an argument, and is not rspec running
+  if ARGV.length > 0 && "#{$0}" !~ /rspec/
+    peeps = []
+
+    ARGV.each_with_index do |a|
+      sep = get_separator(File.open(a) {|f| f.readline})
+      peeps = CSV.read(a, { :col_sep => sep })
+    end
+
+    save(peeps)
+    output
   end
 end
