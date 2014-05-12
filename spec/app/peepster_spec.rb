@@ -1,5 +1,4 @@
 require 'spec_helper.rb'
-require 'peepster'
 
 describe Peepster do
   let(:peep) { ["Frusciante", "Trinity", "Female", "Green", "3/13/1989"] }
@@ -8,7 +7,7 @@ describe Peepster do
 
   describe "command line" do
     context "with file args" do
-      let(:output) { `ruby lib/peepster.rb spec/fixtures/test1.csv spec/fixtures/test2.csv spec/fixtures/test3.csv` }
+      let(:output) { `ruby app/peepster.rb spec/fixtures/test1.csv spec/fixtures/test2.csv spec/fixtures/test3.csv` }
       before(:each) { output }
       after(:each) { File.delete("data/data.csv") }
 
@@ -39,24 +38,24 @@ describe Peepster do
       after(:each) { File.delete("data/data.csv") }
 
       it "sorts by gender" do
-        output = `ruby lib/peepster.rb --gender spec/fixtures/test3.csv`
+        output = `ruby app/peepster.rb --gender spec/fixtures/test3.csv`
         expect(output).to match(/saved peeps\nGordon/)
       end
 
       it "sorts by date of birth" do
-        output = `ruby lib/peepster.rb --birth spec/fixtures/test2.csv`
+        output = `ruby app/peepster.rb --birth spec/fixtures/test2.csv`
         expect(output).to match(/saved peeps\nHendrix/)
       end
 
       it "sorts by last name" do
-        output = `ruby lib/peepster.rb --last spec/fixtures/test1.csv`
+        output = `ruby app/peepster.rb --last spec/fixtures/test1.csv`
         expect(output).to match(/saved peeps\nClapton/)
       end
     end
 
     context "without args" do
       it "does nothing" do
-        output = `ruby lib/peepster.rb`
+        output = `ruby app/peepster.rb`
         expect(output).not_to match(/saved peeps/)
       end
     end
@@ -65,25 +64,25 @@ describe Peepster do
   describe ".get_separator" do
     context "line contains '|' separators" do
       it "returns ' | '" do
-        expect(Peepster.get_separator("L | F | Male | Red | 3/13/2013")).to eq ' | '
+        expect(Peepster::App.get_separator("L | F | Male | Red | 3/13/2013")).to eq ' | '
       end
     end
 
     context "line contains ',' separators" do
       it "returns ', '" do
-        expect(Peepster.get_separator("L, F, Male, Red, 3/13/2013")).to eq ', '
+        expect(Peepster::App.get_separator("L, F, Male, Red, 3/13/2013")).to eq ', '
       end
     end
 
     context "line contains ' ' separators" do
       it "returns ' '" do
-        expect(Peepster.get_separator("L F Male Red 3/13/2013")).to eq ' '
+        expect(Peepster::App.get_separator("L F Male Red 3/13/2013")).to eq ' '
       end
     end
 
     context "line does not contain known separators" do
       it "returns nil" do
-        expect(Peepster.get_separator("L*F*Male*Red*3/13/2013")).to eq nil
+        expect(Peepster::App.get_separator("L*F*Male*Red*3/13/2013")).to eq nil
       end
     end
   end
@@ -91,7 +90,7 @@ describe Peepster do
   describe ".save" do
     context "given chunk of peeps" do
       it "creates a csv file of peeps" do
-        Peepster.save(peeps, "test")
+        Peepster::App.save(peeps, "test")
 
         expect(File.exist?("data/test.csv")).to be
         expect($stdout.string).to match(/saved/)
@@ -102,7 +101,7 @@ describe Peepster do
 
     context "given one peep" do
       it "raises an error trying to map array" do
-        expect{ Peepster.save(peep, "test") }.to raise_error(NoMethodError)
+        expect{ Peepster::App.save(peep, "test") }.to raise_error(NoMethodError)
       end
     end
   end
@@ -110,7 +109,7 @@ describe Peepster do
   describe ".sort" do
     context "sort option 1" do
       it "sorts peeps by gender (f first), then last name asc" do
-        sorted_peeps = Peepster.sort(peeps, 1)
+        sorted_peeps = Peepster::App.sort(peeps, :gender)
 
         expect(sorted_peeps[0].first).to eq "Frusciante"
         expect(sorted_peeps[1].first).to eq "Jett"
@@ -119,7 +118,7 @@ describe Peepster do
 
     context "sort option 2" do
       it "sorts peeps by birth date, asc" do
-        sorted_peeps = Peepster.sort(peeps, 2)
+        sorted_peeps = Peepster::App.sort(peeps, :birth)
 
         expect(sorted_peeps[0].first).to eq "Knowles"
         expect(sorted_peeps[1].first).to eq "Frusciante"
@@ -128,7 +127,7 @@ describe Peepster do
 
     context "sort options 3" do
       it "sorts peeps by last name desc" do
-        sorted_peeps = Peepster.sort(peeps, 3)
+        sorted_peeps = Peepster::App.sort(peeps, :last)
 
         expect(sorted_peeps[0].first).to eq "Frusciante"
         expect(sorted_peeps[1].first).to eq "Jett"
@@ -137,7 +136,7 @@ describe Peepster do
 
     context "no valid sort option" do
       it "does not sort" do
-        sorted_peeps = Peepster.sort(peeps, 5)
+        sorted_peeps = Peepster::App.sort(peeps, :blah)
 
         expect(sorted_peeps[0].first).to eq "Frusciante"
         expect(sorted_peeps[1].first).to eq "Knowles"
@@ -145,30 +144,40 @@ describe Peepster do
     end
   end
 
-  describe ".output" do
+  describe ".records_sorted_by" do
     before(:each) do
-      Peepster.save(peeps, "test")
+      Peepster::App.save(peeps, "test")
     end
 
     after(:each) { File.delete("data/test.csv") }
 
     it "sorts using .sort" do
       # stub .sort since it's already tested
-      allow(Peepster).to receive(:sort).and_return(peeps)
-      expect(Peepster).to receive(:sort)
+      allow(Peepster::App).to receive(:sort).and_return(peeps)
+      expect(Peepster::App).to receive(:sort)
 
-      Peepster.output(1, "test")
+      Peepster::App.records_sorted_by(:gender, "test")
+    end
+  end
+
+  describe ".output" do
+    let(:records) { Peepster::App.records_sorted_by(:gender, "test") }
+
+    before(:each) do
+      Peepster::App.save(peeps, "test")
     end
 
+    after(:each) { File.delete("data/test.csv") }
+
     it "outputs existing csv file of peeps" do
-      Peepster.output(1, "test")
+      Peepster::App.output(records)
 
       expect($stdout.string).to match(/Frusciante/)
       expect($stdout.string).to match(/outputted/)
     end
 
     it "outputs dates in M/D/YYYY format" do
-      Peepster.output(1, "test")
+      Peepster::App.output(records)
 
       expect($stdout.string).to match(/3\/13\/1989/)
     end
