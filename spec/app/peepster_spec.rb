@@ -1,8 +1,8 @@
 require 'spec_helper.rb'
 
 describe Peepster do
-  let(:peep) { ["Frusciante", "Trinity", "Female", "Green", "3/13/1989"] }
-  let(:peeps) { [peep, ["Knowles", "Tyler", "Male", "Red", "4/5/1979"],
+  let(:peeps) { [["Frusciante", "Trinity", "Female", "Green", "3/13/1989"],
+                ["Knowles", "Tyler", "Male", "Red", "4/5/1979"],
                 ["Jett", "Clementine", "Female", "Black", "9/5/1991"]] }
 
   before(:each) do
@@ -108,6 +108,8 @@ describe Peepster do
     end
 
     context "given one peep" do
+      let(:peep) { "Frusciante | Trinity | Female | Green | 3/13/1989" }
+
       it "adds peep to (or creates) a csv file with peep" do
         Peepster::App.save(peep, "test")
 
@@ -200,6 +202,18 @@ describe Peepster do
       Peepster::App.output(records)
 
       expect($stdout.string).to match(/3\/13\/1989/)
+    end
+  end
+
+  describe ".parse" do
+    it "calls .get_separator" do
+      expect(Peepster::App).to receive(:get_separator)
+
+      Peepster::App.parse("L | F | Male | Red | 3/13/2013")
+    end
+
+    it "parses a line into an array" do
+      expect(Peepster::App.parse("L | F | Male | Red | 3/13/2013")).to be_an Array
     end
   end
 end

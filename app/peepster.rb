@@ -6,7 +6,7 @@ module Peepster
   class App
     def self.save(peeps, filename = "data")
       CSV.open("data/#{filename}.csv", "a") do |csv|
-        peeps.first.is_a?(Array) ? peeps.each {|p| csv << p } : csv << peeps
+        peeps.is_a?(Array) ? peeps.each {|p| csv << p } : csv << parse(peeps)
       end
 
       puts 'saved peeps'
@@ -50,6 +50,10 @@ module Peepster
       end
 
       return nil
+    end
+
+    def self.parse(line)
+      line.split(get_separator(line))
     end
 
     # Has an argument, and is not rspec running
