@@ -5,8 +5,8 @@ require 'csv'
 module Peepster
   class App
     def self.save(peeps, filename = "data")
-      CSV.open("data/#{filename}.csv", "w") do |csv|
-        peeps.each {|p| csv << p }
+      CSV.open("data/#{filename}.csv", "a") do |csv|
+        peeps.first.is_a?(Array) ? peeps.each {|p| csv << p } : csv << peeps
       end
 
       puts 'saved peeps'

@@ -19,6 +19,11 @@ module Peepster
       get :name do
         Peepster::App.records_sorted_by(:name)
       end
+
+      desc "Add a single record"
+      post '/' do
+        Peepster::App.save(params[:record])
+      end
     end
   end
 end

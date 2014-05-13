@@ -61,7 +61,15 @@ describe Peepster::API do
     end
 
     describe "POST /records" do
-      it "calls save"
+      let(:peep) { "Fruciante | John | Male | Red | 3/5/1970" }
+
+      it "calls save" do
+        expect(Peepster::App).to receive(:save).with(peep)
+
+        post "/records", { :record => peep}.to_json, { 'CONTENT_TYPE' => 'application/json' }
+
+        expect(last_response.status).to eq 201
+      end
     end
   end
 end
