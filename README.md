@@ -1,16 +1,13 @@
-peepster
-========
+### Peepster
 
 Command line Ruby app to parse records of people's information, and output them sorted, eventually utilzing a [GrapeAPI](https://github.com/intridea/grape) to access different sorting options.
 
-Build
---------
+##### Build
 ```
 bundle
 ```
 
-Usage
---------
+##### Usage
 
 Command Line:
 ```
@@ -26,7 +23,7 @@ Rack web server:
 $ rackup
 ```
 
-URL:
+Web/cURL:
 ```
 GET  http://0.0.0.0:9292/records[/gender|birthdate|name]
 POST http://0.0.0.0:9292/records
@@ -39,10 +36,9 @@ using cURL:
 curl -d '{"record": "Frusciante | John | Male | Red | 3/5/1970"}' 'http://0.0.0.0:9292/records' -H Content-Type:application/json -v
 ```
 
-Test
---------
+##### Test
 ```
 rspec
 ```
 
-*Note*: CSV data is stored in `data/data.csv` and is erased when `rspec` is ran. This could be fixed with environment configuration implementation, or something similar.
+**Note**: CSV data is stored in `data/data.csv` and is erased when `rspec` is ran. This could be fixed with environment configuration implementation, or something similar.
