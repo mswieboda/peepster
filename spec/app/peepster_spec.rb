@@ -69,32 +69,6 @@ describe Peepster do
     end
   end
 
-  describe ".get_separator" do
-    context "line contains '|' separators" do
-      it "returns ' | '" do
-        expect(Peepster::App.get_separator("L | F | Male | Red | 3/13/2013")).to eq ' | '
-      end
-    end
-
-    context "line contains ',' separators" do
-      it "returns ', '" do
-        expect(Peepster::App.get_separator("L, F, Male, Red, 3/13/2013")).to eq ', '
-      end
-    end
-
-    context "line contains ' ' separators" do
-      it "returns ' '" do
-        expect(Peepster::App.get_separator("L F Male Red 3/13/2013")).to eq ' '
-      end
-    end
-
-    context "line does not contain known separators" do
-      it "returns nil" do
-        expect(Peepster::App.get_separator("L*F*Male*Red*3/13/2013")).to eq nil
-      end
-    end
-  end
-
   describe ".save" do
     context "given chunk of peeps" do
       it "adds peeps to (or creates) a csv file of peeps" do
@@ -202,6 +176,32 @@ describe Peepster do
       Peepster::App.output(records)
 
       expect($stdout.string).to match(/3\/13\/1989/)
+    end
+  end
+
+  describe ".get_separator" do
+    context "line contains '|' separators" do
+      it "returns ' | '" do
+        expect(Peepster::App.get_separator("L | F | Male | Red | 3/13/2013")).to eq ' | '
+      end
+    end
+
+    context "line contains ',' separators" do
+      it "returns ', '" do
+        expect(Peepster::App.get_separator("L, F, Male, Red, 3/13/2013")).to eq ', '
+      end
+    end
+
+    context "line contains ' ' separators" do
+      it "returns ' '" do
+        expect(Peepster::App.get_separator("L F Male Red 3/13/2013")).to eq ' '
+      end
+    end
+
+    context "line does not contain known separators" do
+      it "returns nil" do
+        expect(Peepster::App.get_separator("L*F*Male*Red*3/13/2013")).to eq nil
+      end
     end
   end
 
