@@ -29,10 +29,10 @@ module Peepster
 
     def self.records_sorted_by(sort, filename = "data")
       # Read to array
-      peeps = CSV.read("data/#{filename}.csv")
+      peeps = File.exists?("data/#{filename}.csv") ? CSV.read("data/#{filename}.csv") : []
 
       # Sort array, depending on sort option
-      sort(peeps, sort)
+      sort(peeps, sort) unless peeps.empty?
     end
 
     def self.output(peeps)

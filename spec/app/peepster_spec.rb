@@ -158,18 +158,25 @@ describe Peepster do
   end
 
   describe ".records_sorted_by" do
-    before(:each) do
-      Peepster::App.save(peeps, "test")
+    context "data file exists" do
+      before(:each) { Peepster::App.save(peeps, "test") }
+      after(:each) { File.delete("data/test.csv") }
+
+      it "sorts using .sort" do
+        # stub .sort since it's already tested
+        allow(Peepster::App).to receive(:sort).and_return(peeps)
+        expect(Peepster::App).to receive(:sort)
+
+        Peepster::App.records_sorted_by(:gender, "test")
+      end
     end
 
-    after(:each) { File.delete("data/test.csv") }
+    context "data file does not exist" do
+      it "returns nothing" do
+        expect(Peepster::App).to_not receive(:sort)
 
-    it "sorts using .sort" do
-      # stub .sort since it's already tested
-      allow(Peepster::App).to receive(:sort).and_return(peeps)
-      expect(Peepster::App).to receive(:sort)
-
-      Peepster::App.records_sorted_by(:gender, "test")
+        expect(Peepster::App.records_sorted_by(:gender, "test")).to eq nil
+      end
     end
   end
 
