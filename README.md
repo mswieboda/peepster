@@ -8,14 +8,25 @@ Usage
 
 Command Line:
 ```
-ruby app/peepster.rb --gender spec/fixtures/test1.csv spec/fixtures/test2.csv spec/fixtures/test3.csv
+format:
+$ ruby app/peepster.rb --[gender|birthdate|name] [files]
+
+ex:
+$ ruby app/peepster.rb --gender spec/fixtures/test1.csv spec/fixtures/test2.csv spec/fixtures/test3.csv
 ```
 
 Rack web server:
 ```
-rackup
+$ rackup
 ```
 
+URL:
 ```
-http://0.0.0.0:9292/records[/gender|birth|last]
+GET  http://0.0.0.0:9292/records[/gender|birthdate|name]
+POST http://0.0.0.0:9292/records
+
+ex:
+GET  http://0.0.0.0:9292/records/gender
+POST http://0.0.0.0:9292/records
+     sending "Frusciante | John | Male | Red | 3/5/1970" in response body
 ```

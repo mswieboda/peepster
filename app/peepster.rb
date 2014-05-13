@@ -16,10 +16,10 @@ module Peepster
       if sort == :gender
         # Gender F first, Last name asc
         arr.sort {|x, y| [x[2].capitalize, x[0].capitalize] <=> [y[2].capitalize, y[0].capitalize] }
-      elsif sort == :birth
+      elsif sort == :birthdate
         # Birth date asc
         arr.sort {|x, y| Date.strptime(x[4], '%m/%d/%Y') <=> Date.strptime(y[4], '%m/%d/%Y') }
-      elsif sort == :last
+      elsif sort == :name
         # Last name desc
         arr.sort {|x, y| x[0] <=> y[0] }
       else
@@ -55,8 +55,8 @@ module Peepster
     # Has an argument, and is not rspec running
     if ARGV.length > 0 && "#{$0}" !~ /rspec/
       sort = :gender if ARGV.delete('--gender')
-      sort = :birth if ARGV.delete('--birth')
-      sort = :last if ARGV.delete('--last')
+      sort = :birthdate if ARGV.delete('--birthdate')
+      sort = :name if ARGV.delete('--name')
       sort ||= :gender
 
       peeps = []

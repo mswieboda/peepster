@@ -43,12 +43,12 @@ describe Peepster do
       end
 
       it "sorts by date of birth" do
-        output = `ruby app/peepster.rb --birth spec/fixtures/test2.csv`
+        output = `ruby app/peepster.rb --birthdate spec/fixtures/test2.csv`
         expect(output).to match(/saved peeps\nHendrix/)
       end
 
       it "sorts by last name" do
-        output = `ruby app/peepster.rb --last spec/fixtures/test1.csv`
+        output = `ruby app/peepster.rb --name spec/fixtures/test1.csv`
         expect(output).to match(/saved peeps\nClapton/)
       end
     end
@@ -118,7 +118,7 @@ describe Peepster do
 
     context "sort option 2" do
       it "sorts peeps by birth date, asc" do
-        sorted_peeps = Peepster::App.sort(peeps, :birth)
+        sorted_peeps = Peepster::App.sort(peeps, :birthdate)
 
         expect(sorted_peeps[0].first).to eq "Knowles"
         expect(sorted_peeps[1].first).to eq "Frusciante"
@@ -127,7 +127,7 @@ describe Peepster do
 
     context "sort options 3" do
       it "sorts peeps by last name desc" do
-        sorted_peeps = Peepster::App.sort(peeps, :last)
+        sorted_peeps = Peepster::App.sort(peeps, :name)
 
         expect(sorted_peeps[0].first).to eq "Frusciante"
         expect(sorted_peeps[1].first).to eq "Jett"

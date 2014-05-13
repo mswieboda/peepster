@@ -8,22 +8,19 @@ describe Peepster::API do
   end
 
   describe Peepster::API do
-    describe "GET /api/v1/records/gender" do
-      it "returns an array of records sorted by gender, then last name" do
-        get "/api/v1/records/gender"
+    describe "GET /records/gender" do
+      it "calls records sorted by"
+      it "returns an array of records sorted by gender (female first), then last name ascending"
+    end
 
-        pending
+    describe "GET /records/birthdate" do
+      it "calls records sorted by"
+      it "returns an array of records sorted by birth date, ascending"
+    end
 
-        last_response.status.should == 200
-      end
-
-      it "calls records sorted by" do
-        pending
-
-        get "/api/v1/records/gender"
-
-        expect(Peepster::App).to receive(:records_sorted_by)
-      end
+    describe "GET /records/name" do
+      it "calls records sorted by"
+      it "returns an array of records sorted by last name, descending"
     end
   end
 end
