@@ -49,7 +49,7 @@ describe Peepster do
 
       it "sorts by last name" do
         output = `ruby app/peepster.rb --name spec/fixtures/test1.csv`
-        expect(output).to match(/saved peeps\nClapton/)
+        expect(output).to match(/saved peeps\nMurphy/)
       end
     end
 
@@ -126,10 +126,10 @@ describe Peepster do
     end
 
     context "sort options 3" do
-      it "sorts peeps by last name desc" do
+      it "sorts peeps by last name, desc" do
         sorted_peeps = Peepster::App.sort(peeps, :name)
 
-        expect(sorted_peeps[0].first).to eq "Frusciante"
+        expect(sorted_peeps[0].first).to eq "Knowles"
         expect(sorted_peeps[1].first).to eq "Jett"
       end
     end

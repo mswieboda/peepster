@@ -21,7 +21,7 @@ module Peepster
         arr.sort {|x, y| Date.strptime(x[4], '%m/%d/%Y') <=> Date.strptime(y[4], '%m/%d/%Y') }
       elsif sort == :name
         # Last name desc
-        arr.sort {|x, y| x[0] <=> y[0] }
+        arr.sort {|x, y| y[0] <=> x[0] }
       else
         arr
       end
