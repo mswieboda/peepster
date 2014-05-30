@@ -72,7 +72,7 @@ describe Peepster do
   describe ".save" do
     context "given chunk of peeps" do
       it "adds peeps to (or creates) a csv file of peeps" do
-        Peepster::App.save(peeps, "test")
+        Peepster.save(peeps, "test")
 
         expect(File.exist?("data/test.csv")).to be
         expect($stdout.string).to match(/saved/)
@@ -85,7 +85,7 @@ describe Peepster do
       let(:peep) { "Frusciante | Trinity | Female | Green | 3/13/1989" }
 
       it "adds peep to (or creates) a csv file with peep" do
-        Peepster::App.save(peep, "test")
+        Peepster.save(peep, "test")
 
         expect(File.exist?("data/test.csv")).to be
         expect($stdout.string).to match(/saved/)
@@ -98,7 +98,7 @@ describe Peepster do
   describe ".sort" do
     context "sort option 1" do
       it "sorts peeps by gender (f first), then last name asc" do
-        sorted_peeps = Peepster::App.sort(peeps, :gender)
+        sorted_peeps = Peepster.sort(peeps, :gender)
 
         expect(sorted_peeps[0].first).to eq "Frusciante"
         expect(sorted_peeps[1].first).to eq "Jett"
@@ -107,7 +107,7 @@ describe Peepster do
 
     context "sort option 2" do
       it "sorts peeps by birth date, asc" do
-        sorted_peeps = Peepster::App.sort(peeps, :birthdate)
+        sorted_peeps = Peepster.sort(peeps, :birthdate)
 
         expect(sorted_peeps[0].first).to eq "Knowles"
         expect(sorted_peeps[1].first).to eq "Frusciante"
@@ -116,7 +116,7 @@ describe Peepster do
 
     context "sort options 3" do
       it "sorts peeps by last name, desc" do
-        sorted_peeps = Peepster::App.sort(peeps, :name)
+        sorted_peeps = Peepster.sort(peeps, :name)
 
         expect(sorted_peeps[0].first).to eq "Knowles"
         expect(sorted_peeps[1].first).to eq "Jett"
@@ -125,7 +125,7 @@ describe Peepster do
 
     context "no valid sort option" do
       it "does not sort" do
-        sorted_peeps = Peepster::App.sort(peeps, :blah)
+        sorted_peeps = Peepster.sort(peeps, :blah)
 
         expect(sorted_peeps[0].first).to eq "Frusciante"
         expect(sorted_peeps[1].first).to eq "Knowles"
@@ -135,45 +135,45 @@ describe Peepster do
 
   describe ".records_sorted_by" do
     context "data file exists" do
-      before(:each) { Peepster::App.save(peeps, "test") }
+      before(:each) { Peepster.save(peeps, "test") }
       after(:each) { File.delete("data/test.csv") }
 
       it "sorts using .sort" do
         # stub .sort since it's already tested
-        allow(Peepster::App).to receive(:sort).and_return(peeps)
-        expect(Peepster::App).to receive(:sort)
+        allow(Peepster).to receive(:sort).and_return(peeps)
+        expect(Peepster).to receive(:sort)
 
-        Peepster::App.records_sorted_by(:gender, "test")
+        Peepster.records_sorted_by(:gender, "test")
       end
     end
 
     context "data file does not exist" do
       it "returns nothing" do
-        expect(Peepster::App).to_not receive(:sort)
+        expect(Peepster).to_not receive(:sort)
 
-        expect(Peepster::App.records_sorted_by(:gender, "test")).to eq nil
+        expect(Peepster.records_sorted_by(:gender, "test")).to eq nil
       end
     end
   end
 
   describe ".output" do
-    let(:records) { Peepster::App.records_sorted_by(:gender, "test") }
+    let(:records) { Peepster.records_sorted_by(:gender, "test") }
 
     before(:each) do
-      Peepster::App.save(peeps, "test")
+      Peepster.save(peeps, "test")
     end
 
     after(:each) { File.delete("data/test.csv") }
 
     it "outputs existing csv file of peeps" do
-      Peepster::App.output(records)
+      Peepster.output(records)
 
       expect($stdout.string).to match(/Frusciante/)
       expect($stdout.string).to match(/outputted/)
     end
 
     it "outputs dates in M/D/YYYY format" do
-      Peepster::App.output(records)
+      Peepster.output(records)
 
       expect($stdout.string).to match(/3\/13\/1989/)
     end
@@ -182,38 +182,38 @@ describe Peepster do
   describe ".get_separator" do
     context "line contains '|' separators" do
       it "returns ' | '" do
-        expect(Peepster::App.get_separator("L | F | Male | Red | 3/13/2013")).to eq ' | '
+        expect(Peepster.get_separator("L | F | Male | Red | 3/13/2013")).to eq ' | '
       end
     end
 
     context "line contains ',' separators" do
       it "returns ', '" do
-        expect(Peepster::App.get_separator("L, F, Male, Red, 3/13/2013")).to eq ', '
+        expect(Peepster.get_separator("L, F, Male, Red, 3/13/2013")).to eq ', '
       end
     end
 
     context "line contains ' ' separators" do
       it "returns ' '" do
-        expect(Peepster::App.get_separator("L F Male Red 3/13/2013")).to eq ' '
+        expect(Peepster.get_separator("L F Male Red 3/13/2013")).to eq ' '
       end
     end
 
     context "line does not contain known separators" do
       it "returns nil" do
-        expect(Peepster::App.get_separator("L*F*Male*Red*3/13/2013")).to eq nil
+        expect(Peepster.get_separator("L*F*Male*Red*3/13/2013")).to eq nil
       end
     end
   end
 
   describe ".parse" do
     it "calls .get_separator" do
-      expect(Peepster::App).to receive(:get_separator)
+      expect(Peepster).to receive(:get_separator)
 
-      Peepster::App.parse("L | F | Male | Red | 3/13/2013")
+      Peepster.parse("L | F | Male | Red | 3/13/2013")
     end
 
     it "parses a line into an array" do
-      expect(Peepster::App.parse("L | F | Male | Red | 3/13/2013")).to be_an Array
+      expect(Peepster.parse("L | F | Male | Red | 3/13/2013")).to be_an Array
     end
   end
 end

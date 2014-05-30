@@ -5,6 +5,5 @@ require 'bundler/setup'
 
 Bundler.require :default, ENV['RACK_ENV']
 
-require File.expand_path('../../app/peepster', __FILE__)
-require File.expand_path('../../api/api', __FILE__)
-
+require_relative '../app/peepster'
+Dir[File.expand_path('../api/*.rb', File.dirname(__FILE__))].each {|file| require file }

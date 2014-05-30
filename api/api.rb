@@ -7,22 +7,22 @@ module Peepster
     resource :records do
       desc "Returns records sorted by gender"
       get :gender do
-        Peepster::App.records_sorted_by(:gender)
+        Peepster.records_sorted_by(:gender)
       end
 
       desc "Returns records sorted by birthdate"
       get :birthdate do
-        Peepster::App.records_sorted_by(:birthdate)
+        Peepster.records_sorted_by(:birthdate)
       end
 
       desc "Returns records sorted by name"
       get :name do
-        Peepster::App.records_sorted_by(:name)
+        Peepster.records_sorted_by(:name)
       end
 
       desc "Add a single record"
       post '/' do
-        Peepster::App.save(params[:record])
+        Peepster.save(params[:record])
       end
     end
   end

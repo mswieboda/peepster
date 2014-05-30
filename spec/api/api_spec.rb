@@ -14,7 +14,7 @@ describe Peepster::API do
 
     describe "GET /records/gender" do
       it "calls records sorted by" do
-        expect(Peepster::App).to receive(:records_sorted_by)
+        expect(Peepster).to receive(:records_sorted_by)
 
         get "/records/gender"
 
@@ -30,7 +30,7 @@ describe Peepster::API do
 
     describe "GET /records/birthdate" do
       it "calls records sorted by" do
-        expect(Peepster::App).to receive(:records_sorted_by)
+        expect(Peepster).to receive(:records_sorted_by)
 
         get "/records/birthdate"
 
@@ -46,7 +46,7 @@ describe Peepster::API do
 
     describe "GET /records/name" do
       it "calls records sorted by" do
-        expect(Peepster::App).to receive(:records_sorted_by)
+        expect(Peepster).to receive(:records_sorted_by)
 
         get "/records/name"
 
@@ -64,7 +64,7 @@ describe Peepster::API do
       let(:peep) { "Fruciante | John | Male | Red | 3/5/1970" }
 
       it "calls save" do
-        expect(Peepster::App).to receive(:save).with(peep)
+        expect(Peepster).to receive(:save).with(peep)
 
         post "/records", { :record => peep}.to_json, { 'CONTENT_TYPE' => 'application/json' }
 
